@@ -62,7 +62,7 @@ const ColumnDetailModal = ({ column, customGroups, onSave, onClose }) => {
               Basic Information
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Column Name
@@ -122,7 +122,7 @@ const ColumnDetailModal = ({ column, customGroups, onSave, onClose }) => {
               Column Properties
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Certification Status

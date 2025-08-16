@@ -188,7 +188,7 @@ const BusinessOfferSelector = ({ label, value = [], onChange }) => {
 
       {/* Info Text */}
       <p className="text-xs text-gray-500">
-        Você pode selecionar múltiplas ofertas. As ofertas selecionadas serão salvas como um array no Atlan.
+        Você pode selecionar múltiplas ofertas. As ofertas selecionadas serão salvas no Atlan.
       </p>
     </div>
   );

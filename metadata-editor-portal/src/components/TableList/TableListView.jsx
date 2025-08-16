@@ -5,7 +5,7 @@ import SearchBar from './SearchBar';
 import SelectionCounter from './SelectionCounter';
 import BulkActions from './BulkActions';
 import UploadSection from './UploadSection';
-import { Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Filter, ChevronDown, ChevronUp, LayoutGrid, List } from 'lucide-react';
 import { mockTables } from '../../data/mockData';
 
 const TableListView = ({ onEditSelected }) => {
@@ -19,7 +19,9 @@ const TableListView = ({ onEditSelected }) => {
     schema: ''
   });
   const [loading, setLoading] = useState(true);
-  const [filtersCollapsed, setFiltersCollapsed] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+  const [showUploadSection, setShowUploadSection] = useState(false);
+  const [compactView, setCompactView] = useState(false);
 
   useEffect(() => {
     // Simulate API call
@@ -154,62 +156,54 @@ const TableListView = ({ onEditSelected }) => {
   }
 
   return (
-    <div className="flex h-full">
-      {/* Collapsible Filters */}
-      <div className={`transition-all duration-300 ${filtersCollapsed ? 'w-0' : 'w-80'}`}>
-        <div className={`h-full ${filtersCollapsed ? 'hidden' : 'block'}`}>
-          <TableFilters 
-            filters={filters}
-            onFilterChange={setFilters}
-            tables={tables}
-            onToggleCollapse={() => setFiltersCollapsed(!filtersCollapsed)}
-          />
-        </div>
-      </div>
-      
-      <div className="flex-1 px-6">
-        {/* Upload Section */}
-        <div className="mb-6">
-          <UploadSection />
-        </div>
-        <div className="sticky top-0 bg-gray-50 pb-4 z-10">
-          {/* Filter Toggle and Active Filters Indicator */}
-          <div className="mb-4 flex items-center justify-between">
-            {filtersCollapsed && (
-              <button
-                onClick={() => setFiltersCollapsed(false)}
-                className="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-200"
-                title="Expandir filtros"
-              >
-                <ChevronRight className="w-4 h-4 text-gray-600" />
-                <Filter className="w-4 h-4 text-gray-600" />
-                <span className="text-sm text-gray-600">Filtros</span>
-                {(filters.connection || filters.database || filters.schema) && (
-                  <div className="w-2 h-2 bg-atlan-blue rounded-full"></div>
-                )}
-              </button>
-            )}
+    <div className="h-full px-6">
+        <div className="sticky top-0 pb-4 z-10 -mx-6 px-6" style={{ backgroundColor: '#f4f6fd' }}>
+          {/* Filter Toggle Button and View Toggle */}
+          <div className="mb-4 flex space-x-2">
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`h-[35px] flex items-center space-x-2 px-3 text-sm font-medium border shadow-sm rounded-lg transition-colors duration-200 ${
+                showFilters 
+                  ? 'bg-blue-50 text-blue-700 border-blue-300' 
+                  : 'bg-white border-gray-200 hover:bg-gray-50'
+              }`}
+            >
+              <Filter className="w-4 h-4" />
+              <span>Filtros</span>
+              {(filters.connection || filters.database || filters.schema) && (
+                <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+              )}
+              {showFilters ? (
+                <ChevronUp className="w-4 h-4" />
+              ) : (
+                <ChevronDown className="w-4 h-4" />
+              )}
+            </button>
+
+            <button
+              onClick={() => setCompactView(!compactView)}
+              className={`h-[35px] flex items-center space-x-2 px-3 text-sm font-medium border shadow-sm rounded-lg transition-colors duration-200 ${
+                compactView 
+                  ? 'bg-blue-50 text-blue-700 border-blue-300' 
+                  : 'bg-white border-gray-200 hover:bg-gray-50'
+              }`}
+              title={compactView ? 'Visualização normal' : 'Visualização compacta'}
+            >
+              {compactView ? (
+                <LayoutGrid className="w-4 h-4" />
+              ) : (
+                <List className="w-4 h-4" />
+              )}
+            </button>
+          </div>
             
-            {filtersCollapsed && (filters.connection || filters.database || filters.schema) && (
-              <div className="flex items-center space-x-2 text-sm">
-                <span className="text-gray-600">Ativos:</span>
-                {filters.connection && (
-                  <span className="px-2 py-1 bg-atlan-blue-100 text-atlan-blue-700 rounded text-xs">
-                    {filters.connection}
-                  </span>
-                )}
-                {filters.database && (
-                  <span className="px-2 py-1 bg-atlan-blue-100 text-atlan-blue-700 rounded text-xs">
-                    {filters.database}
-                  </span>
-                )}
-                {filters.schema && (
-                  <span className="px-2 py-1 bg-atlan-blue-100 text-atlan-blue-700 rounded text-xs">
-                    {filters.schema}
-                  </span>
-                )}
-              </div>
-            )}
+          {/* Filters Section - Below buttons */}
+          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showFilters ? 'max-h-96 opacity-100 mb-4' : 'max-h-0 opacity-0'}`}>
+            <TableFilters 
+              filters={filters}
+              onFilterChange={setFilters}
+              tables={tables}
+            />
           </div>
 
           <SearchBar 
@@ -217,31 +211,31 @@ const TableListView = ({ onEditSelected }) => {
             onChange={setSearchQuery}
             placeholder="Buscar tabelas por nome ou qualified name..."
           />
+
+          {/* Upload Section */}
+          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showUploadSection ? 'max-h-96 opacity-100 mt-4 mb-4' : 'max-h-0 opacity-0'}`}>
+            <UploadSection />
+          </div>
           
-          <div className="mt-4 flex items-center justify-between">
-            <div>
-              {selectedTables.size > 0 && (
-                <SelectionCounter 
-                  selected={selectedTables.size}
-                  max={5}
-                />
-              )}
-            </div>
+          <div className="mt-4 flex justify-end">
             <BulkActions 
               onEdit={handleEditSelected}
               onClear={handleClearSelection}
               onExport={handleExportSelected}
+              onImport={() => setShowUploadSection(!showUploadSection)}
+              showingUpload={showUploadSection}
               selectedCount={selectedTables.size}
               disabled={selectedTables.size === 0}
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className={`grid gap-4 ${compactView ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6' : 'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3'}`}>
           {filteredTables.map((table) => (
             <TableCard
               key={table.guid}
               table={table}
+              compact={compactView}
               isSelected={selectedTables.has(table.guid)}
               onSelect={() => handleSelectTable(table.guid)}
               disabled={!selectedTables.has(table.guid) && selectedTables.size >= 5}
@@ -254,7 +248,20 @@ const TableListView = ({ onEditSelected }) => {
             <p className="text-gray-500">Nenhuma tabela encontrada com os critérios especificados</p>
           </div>
         )}
-      </div>
+
+        {/* Floating Selection Counter */}
+        <div className={`fixed bottom-6 left-1/2 transform -translate-x-1/2 z-40 transition-all duration-500 ease-in-out ${
+          selectedTables.size > 0 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-20 pointer-events-none'
+        }`}>
+          <div className="shadow-2xl rounded-lg">
+            <SelectionCounter 
+              selected={selectedTables.size}
+              max={5}
+            />
+          </div>
+        </div>
     </div>
   );
 };

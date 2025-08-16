@@ -1,7 +1,7 @@
 import React from 'react';
-import { Filter, X, ChevronLeft } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
 
-const TableFilters = ({ filters, onFilterChange, tables, onToggleCollapse }) => {
+const TableFilters = ({ filters, onFilterChange, tables }) => {
   // Extract unique values from tables
   const connections = [...new Set(tables.map(t => t.connection || 'snowflake'))];
   const databases = [...new Set(tables.map(t => t.database))];
@@ -25,37 +25,27 @@ const TableFilters = ({ filters, onFilterChange, tables, onToggleCollapse }) => 
   const hasActiveFilters = filters.connection || filters.database || filters.schema;
 
   return (
-    <div className="w-80 bg-white border-r border-gray-200 overflow-y-auto">
-      <div className="p-4 border-b border-gray-200">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-2">
-            <Filter className="w-5 h-5 text-gray-600" />
-            <h3 className="font-semibold text-gray-900">Filtros</h3>
-          </div>
-          <button
-            onClick={onToggleCollapse}
-            className="w-8 h-8 flex items-center justify-center rounded-lg border border-gray-300 hover:bg-gray-50 transition-colors duration-200"
-            title="Colapsar filtros"
-          >
-            <ChevronLeft className="w-4 h-4 text-gray-600" />
-          </button>
+    <div className="bg-white border border-gray-200 rounded-lg p-4">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <Filter className="w-5 h-5 text-gray-600" />
+          <h3 className="font-semibold text-gray-900">Filtros</h3>
         </div>
         {hasActiveFilters && (
-          <div className="flex justify-end">
-            <button
-              onClick={clearFilters}
-              className="text-sm hover:underline"
-              style={{ color: '#2960d4' }}
-              onMouseEnter={(e) => e.target.style.color = '#1e4ba8'}
-              onMouseLeave={(e) => e.target.style.color = '#2960d4'}
-            >
-              Limpar tudo
-            </button>
-          </div>
+          <button
+            onClick={clearFilters}
+            className="text-sm hover:underline flex items-center space-x-1"
+            style={{ color: '#2960d4' }}
+            onMouseEnter={(e) => e.target.style.color = '#1e4ba8'}
+            onMouseLeave={(e) => e.target.style.color = '#2960d4'}
+          >
+            <X className="w-4 h-4" />
+            <span>Limpar tudo</span>
+          </button>
         )}
       </div>
 
-      <div className="p-4 space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Connection Filter */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">

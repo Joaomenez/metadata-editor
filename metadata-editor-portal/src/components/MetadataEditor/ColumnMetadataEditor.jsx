@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Edit2, Check, X, Database } from 'lucide-react';
 import ColumnDetailModal from './ColumnDetailModal';
+import AllowedValuesModal from './AllowedValuesModal';
 
 const ColumnMetadataEditor = ({ columns, tableId, customGroups }) => {
   const [editedColumns, setEditedColumns] = useState(columns.map(c => ({ ...c })));
@@ -8,6 +9,8 @@ const ColumnMetadataEditor = ({ columns, tableId, customGroups }) => {
   const [tempValue, setTempValue] = useState('');
   const [selectedColumn, setSelectedColumn] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showAllowedValuesModal, setShowAllowedValuesModal] = useState(false);
+  const [selectedColumnForValues, setSelectedColumnForValues] = useState(null);
 
   const handleCellEdit = (columnId, field) => {
     const column = editedColumns.find(c => c.guid === columnId);
@@ -39,6 +42,23 @@ const ColumnMetadataEditor = ({ columns, tableId, customGroups }) => {
     ));
     setShowDetailModal(false);
     setSelectedColumn(null);
+  };
+
+  const handleOpenAllowedValuesModal = (column) => {
+    setSelectedColumnForValues(column);
+    setShowAllowedValuesModal(true);
+  };
+
+  const handleSaveAllowedValues = (values) => {
+    if (selectedColumnForValues) {
+      setEditedColumns(editedColumns.map(col =>
+        col.guid === selectedColumnForValues.guid 
+          ? { ...col, allowedValues: values }
+          : col
+      ));
+    }
+    setShowAllowedValuesModal(false);
+    setSelectedColumnForValues(null);
   };
 
 
@@ -162,54 +182,15 @@ const ColumnMetadataEditor = ({ columns, tableId, customGroups }) => {
                         <label className="block text-sm font-medium text-gray-700 mb-2">
                           Valores Permitidos
                         </label>
-                        <div className="space-y-2">
-                          {(column.allowedValues || []).map((value, index) => (
-                            <div key={index} className="flex items-center space-x-2">
-                              <input
-                                type="text"
-                                value={value}
-                                onChange={(e) => {
-                                  const newValues = [...(column.allowedValues || [])];
-                                  newValues[index] = e.target.value;
-                                  const newColumns = editedColumns.map(col =>
-                                    col.guid === column.guid 
-                                      ? { ...col, allowedValues: newValues }
-                                      : col
-                                  );
-                                  setEditedColumns(newColumns);
-                                }}
-                                className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-atlan-blue-500"
-                                placeholder="Valor permitido"
-                              />
-                              <button
-                                onClick={() => {
-                                  const newValues = (column.allowedValues || []).filter((_, i) => i !== index);
-                                  const newColumns = editedColumns.map(col =>
-                                    col.guid === column.guid 
-                                      ? { ...col, allowedValues: newValues }
-                                      : col
-                                  );
-                                  setEditedColumns(newColumns);
-                                }}
-                                className="p-1 text-red-600 hover:bg-red-50 rounded"
-                              >
-                                <X className="w-4 h-4" />
-                              </button>
-                            </div>
-                          ))}
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm text-gray-600">
+                            {(column.allowedValues || []).length} valor(es) definido(s)
+                          </span>
                           <button
-                            onClick={() => {
-                              const newValues = [...(column.allowedValues || []), ''];
-                              const newColumns = editedColumns.map(col =>
-                                col.guid === column.guid 
-                                  ? { ...col, allowedValues: newValues }
-                                  : col
-                              );
-                              setEditedColumns(newColumns);
-                            }}
-                            className="text-sm text-atlan-blue hover:text-atlan-blue-hover"
+                            onClick={() => handleOpenAllowedValuesModal(column)}
+                            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
                           >
-                            + Adicionar valor
+                            Gerenciar valores
                           </button>
                         </div>
                       </div>
@@ -234,6 +215,16 @@ const ColumnMetadataEditor = ({ columns, tableId, customGroups }) => {
           }}
         />
       )}
+
+      <AllowedValuesModal
+        isOpen={showAllowedValuesModal}
+        column={selectedColumnForValues}
+        onSave={handleSaveAllowedValues}
+        onClose={() => {
+          setShowAllowedValuesModal(false);
+          setSelectedColumnForValues(null);
+        }}
+      />
     </>
   );
 };

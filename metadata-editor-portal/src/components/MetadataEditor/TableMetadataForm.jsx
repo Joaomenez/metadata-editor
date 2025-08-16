@@ -26,7 +26,7 @@ const TableMetadataForm = ({ table, onChange, customGroups }) => {
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Informações Básicas</h3>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Nome da Tabela
@@ -41,19 +41,6 @@ const TableMetadataForm = ({ table, onChange, customGroups }) => {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Nome Qualificado
-            </label>
-            <input
-              type="text"
-              value={table.qualifiedName}
-              disabled
-              className="w-full px-3 py-2 border border-gray-300 rounded-md bg-gray-50 text-gray-500"
-            />
-          </div>
-        </div>
-
-        <div className="mt-4">
-          <label className="block text-sm font-medium text-gray-700 mb-1">
             Nome Lógico da Tabela
           </label>
           <input
@@ -63,6 +50,7 @@ const TableMetadataForm = ({ table, onChange, customGroups }) => {
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-atlan-blue-500"
             placeholder="Digite o nome lógico da tabela..."
           />
+          </div>
         </div>
 
         <div className="mt-4">

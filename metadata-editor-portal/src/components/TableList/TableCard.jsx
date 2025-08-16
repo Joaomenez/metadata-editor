@@ -1,7 +1,7 @@
 import React from 'react';
 import { Database, Users, Calendar } from 'lucide-react';
 
-const TableCard = ({ table, isSelected, onSelect, disabled }) => {
+const TableCard = ({ table, isSelected, onSelect, disabled, compact = false }) => {
   // Função para validar e mostrar o nome do grupo seguindo a taxonomia G_ATLAN_{SIGLA}_BTSTEWARD
   const getGroupName = (ownerGroup) => {
     if (!ownerGroup) return null;
@@ -16,6 +16,56 @@ const TableCard = ({ table, isSelected, onSelect, disabled }) => {
     // Se não seguir o padrão exato, não exibe
     return null;
   };
+
+  if (compact) {
+    return (
+      <div
+        className={`
+          relative p-2 rounded-lg border transition-all duration-200 cursor-pointer
+          ${isSelected 
+            ? 'ring-1 ring-opacity-50' 
+            : 'bg-white border-gray-200 hover:border-gray-300 hover:shadow-sm'
+          }
+          ${disabled && !isSelected ? 'opacity-50 cursor-not-allowed' : ''}
+        `}
+        style={isSelected ? {
+          backgroundColor: '#e0ecfe',
+          borderColor: '#2960d4',
+          ringColor: '#2960d4'
+        } : {}}
+        onClick={() => !disabled && onSelect()}
+      >
+        <div className="absolute top-2 right-2">
+          <input
+            type="checkbox"
+            checked={isSelected}
+            onChange={() => {}}
+            disabled={disabled && !isSelected}
+            className="w-4 h-4 rounded cursor-pointer focus:ring-1"
+            style={{ 
+              accentColor: '#2960d4',
+              focusRingColor: '#2960d4'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+
+        <div className="pr-6">
+          <div className="flex items-center space-x-2">
+            <div className="p-1 bg-atlan-blue-100 rounded">
+              <Database className="w-3 h-3 text-atlan-blue-600" />
+            </div>
+            
+            <div className="flex-1 min-w-0">
+              <h3 className="text-sm font-medium text-gray-900 truncate">
+                {table.name}
+              </h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div

@@ -21,10 +21,10 @@ const Breadcrumb = ({ onNavigate, selectedTables }) => {
       <div className="flex items-center space-x-1 text-gray-900 font-medium">
         <FileEdit className="w-4 h-4" />
         <span>
-          Editor de Metadados 
+          Editor de Metadados&nbsp; 
           {selectedTables && selectedTables.length > 0 && (
             <span className="text-gray-500 font-normal">
-              ({selectedTables.length} tabela{selectedTables.length > 1 ? 's' : ''} selecionada{selectedTables.length > 1 ? 's' : ''})
+               ({selectedTables.length} tabela{selectedTables.length > 1 ? 's' : ''} selecionada{selectedTables.length > 1 ? 's' : ''})
             </span>
           )}
         </span>

@@ -20,9 +20,9 @@ const CustomMetadataGroup = ({ group, data, onChange }) => {
         <p className="text-sm text-gray-600 mb-4">{group.description}</p>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {group.properties.map(property => (
-          <div key={property.name} className={property.type === 'text' ? 'md:col-span-2' : ''}>
+          <div key={property.name} className={property.type === 'text' ? 'lg:col-span-2' : ''}>
             <DynamicFieldRenderer
               property={property}
               value={data[property.name]}

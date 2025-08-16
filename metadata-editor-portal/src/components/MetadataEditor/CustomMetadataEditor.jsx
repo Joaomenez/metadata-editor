@@ -35,7 +35,7 @@ const CustomMetadataEditor = ({ assetType, customGroups, customMetadata, onChang
 
       {/* Regular groups in a grid layout (side by side) - shown after */}
       {regularGroups.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {regularGroups.map(group => (
             <CustomMetadataGroup
               key={group.name}

@@ -304,17 +304,42 @@ export const customMetadataGroups = [
     ]
   },
   {
+    name: "Funcional do Curador",
+    displayName: "Funcional do Curador",
+    description: "",
+    icon: "🧑",
+    applicableAssetTypes: ["Table"],
+    properties: [
+      {
+        name: "Aprovador Principal",
+        displayName: "Aprovador Principal",
+        type: "string",
+        description: "Aprovador principal",
+        required: false,
+        placeholder: "007333555"
+      },
+      {
+        name: "Aprovador Backup",
+        displayName: "Aprovador backup",
+        type: "string",
+        description: "Aprovador backup",
+        required: false,
+        placeholder: "007333444"
+      }
+    ]
+  },
+  {
     name: "GoldenSource",
     displayName: "Golden Source",
-    description: "Definições de fonte autoritativa dos dados",
+    description: "",
     icon: "⭐",
     applicableAssetTypes: ["Table"],
     properties: [
       {
         name: "GoldenSource",
-        displayName: "Golden source",
+        displayName: "Golden Source",
         type: "boolean",
-        description: "Indica se é a fonte autoritativa dos dados",
+        description: "Golden Source",
         required: false
       },
       {
@@ -332,7 +357,7 @@ export const customMetadataGroups = [
     displayName: "Ofertas e Serviços de Negócio",
     description: "Ofertas de produtos e serviços relacionados aos dados",
     icon: "🎯",
-    applicableAssetTypes: ["Table", "Column"],
+    applicableAssetTypes: ["Table"],
     isBusinessOfferGroup: true,
     allowMultiple: true,
     properties: []
