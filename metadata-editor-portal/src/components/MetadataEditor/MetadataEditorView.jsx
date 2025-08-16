@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Save, Send, X, Database, Columns, Check, Clock, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import TableMetadataForm from './TableMetadataForm';
 import ColumnMetadataEditor from './ColumnMetadataEditor';
+import ApplyToAllFloatingButton from './ApplyToAllFloatingButton';
 import Breadcrumb from '../Layout/Breadcrumb';
 import { mockColumns } from '../../data/mockData';
 
@@ -11,19 +12,37 @@ const MetadataEditorView = ({ tables, onBack, onSaveDraft, onApplyChanges, custo
   const [activeTab, setActiveTab] = useState('table');
   const [applicationStatus, setApplicationStatus] = useState({});
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showApplyToAllButton, setShowApplyToAllButton] = useState(false);
+  const [lastChangedField, setLastChangedField] = useState(null);
 
   const currentTable = editedTables.find(t => t.guid === activeTable);
   const currentColumns = mockColumns[activeTable] || [];
+  
+  // Debug log
+  console.log('Current table:', activeTable, currentTable?.customMetadata);
 
   // Reset tab to 'table' when switching between tables
   useEffect(() => {
     setActiveTab('table');
   }, [activeTable]);
 
-  const handleTableChange = (updatedTable) => {
+  const handleTableChange = (updatedTable, changedField = null, changedValue = null) => {
     setEditedTables(editedTables.map(t => 
       t.guid === activeTable ? updatedTable : t
     ));
+    
+    // Show apply to all button if there are multiple tables and a custom metadata field was changed
+    if (editedTables.length > 1 && changedField && changedField.startsWith('customMetadata.')) {
+      const fieldParts = changedField.split('.');
+      const displayField = fieldParts[fieldParts.length - 1];
+      
+      setLastChangedField({
+        field: changedField,
+        value: changedValue,
+        displayField: displayField === 'businessOffers' ? 'Ofertas e Serviços de Negócio' : displayField
+      });
+      setShowApplyToAllButton(true);
+    }
   };
 
   const handleApplyTable = async (tableId) => {
@@ -43,6 +62,72 @@ const MetadataEditorView = ({ tables, onBack, onSaveDraft, onApplyChanges, custo
     for (const table of pendingTables) {
       await handleApplyTable(table.guid);
     }
+  };
+
+  const handleApplyToAllTables = () => {
+    if (!lastChangedField) return;
+    
+    const { field, value } = lastChangedField;
+    const [metadataType, groupName, propertyName] = field.split('.');
+    
+    console.log('Apply to all - Before:', {
+      field,
+      value,
+      groupName,
+      propertyName,
+      currentTableData: editedTables.find(t => t.guid === activeTable)?.customMetadata?.[groupName]
+    });
+    
+    // Apply the change to all tables (including current one to ensure consistency)
+    const updatedTables = editedTables.map(table => {
+      // For business offers, we still need to preserve existing group data
+      if (propertyName === 'businessOffers') {
+        const updated = {
+          ...table,
+          customMetadata: {
+            ...table.customMetadata,
+            [groupName]: {
+              ...table.customMetadata?.[groupName],
+              [propertyName]: value
+            }
+          }
+        };
+        console.log(`Updated table ${table.name}:`, updated.customMetadata?.[groupName]);
+        return updated;
+      } else {
+        return {
+          ...table,
+          customMetadata: {
+            ...table.customMetadata,
+            [groupName]: {
+              ...table.customMetadata?.[groupName],
+              [propertyName]: value
+            }
+          }
+        };
+      }
+    });
+    
+    console.log('Apply to all - After update:', updatedTables.map(t => ({
+      name: t.name,
+      businessOffers: t.customMetadata?.[groupName]?.[propertyName]
+    })));
+    
+    setEditedTables(updatedTables);
+    
+    // Auto-save draft for all tables
+    onSaveDraft();
+    
+    // Hide the button
+    setShowApplyToAllButton(false);
+    setLastChangedField(null);
+    
+    alert(`Metadado aplicado para todas as ${editedTables.length} tabelas e salvo como rascunho!`);
+  };
+
+  const handleCancelApplyToAll = () => {
+    setShowApplyToAllButton(false);
+    setLastChangedField(null);
   };
 
   const getStatusIcon = (tableId) => {
@@ -301,6 +386,16 @@ const MetadataEditorView = ({ tables, onBack, onSaveDraft, onApplyChanges, custo
           )}
         </div>
       </div>
+
+      {/* Floating Apply to All Button */}
+      <ApplyToAllFloatingButton
+        isVisible={showApplyToAllButton}
+        onApplyToAll={handleApplyToAllTables}
+        onCancel={handleCancelApplyToAll}
+        changedField={lastChangedField?.displayField}
+        changedValue={lastChangedField?.value}
+        tableCount={editedTables.length}
+      />
     </div>
   );
 };

@@ -8,6 +8,9 @@ const BusinessOfferSelector = ({ label, value = [], onChange }) => {
   const [loading, setLoading] = useState(false);
   const [filteredOffers, setFilteredOffers] = useState([]);
   const dropdownRef = useRef(null);
+  
+  // Debug log
+  console.log('BusinessOfferSelector value:', value);
 
   useEffect(() => {
     // Close dropdown when clicking outside

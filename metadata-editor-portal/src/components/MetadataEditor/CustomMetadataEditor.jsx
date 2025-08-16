@@ -7,8 +7,8 @@ const CustomMetadataEditor = ({ assetType, customGroups, customMetadata, onChang
     group.applicableAssetTypes.includes(assetType)
   );
 
-  const handleGroupChange = (groupName, data) => {
-    onChange(groupName, data);
+  const handleGroupChange = (groupName, data, changedPropertyName = null, changedValue = null) => {
+    onChange(groupName, data, changedPropertyName, changedValue);
   };
 
   const regularGroups = applicableGroups.filter(group => !group.isBusinessOfferGroup);
@@ -27,8 +27,8 @@ const CustomMetadataEditor = ({ assetType, customGroups, customMetadata, onChang
           
           <BusinessOfferSelector
             label="Ofertas Selecionadas"
-            value={customMetadata[group.name] || []}
-            onChange={(offers) => handleGroupChange(group.name, offers)}
+            value={customMetadata[group.name]?.businessOffers || customMetadata[group.name] || []}
+            onChange={(offers) => handleGroupChange(group.name, { businessOffers: offers }, 'businessOffers', offers)}
           />
         </div>
       ))}
@@ -41,7 +41,9 @@ const CustomMetadataEditor = ({ assetType, customGroups, customMetadata, onChang
               key={group.name}
               group={group}
               data={customMetadata[group.name] || {}}
-              onChange={(data) => handleGroupChange(group.name, data)}
+              onChange={(data, changedPropertyName, changedValue) => 
+                handleGroupChange(group.name, data, changedPropertyName, changedValue)
+              }
             />
           ))}
         </div>

@@ -9,14 +9,19 @@ const TableMetadataForm = ({ table, onChange, customGroups }) => {
     });
   };
 
-  const handleCustomMetadataChange = (groupName, data) => {
-    onChange({
+  const handleCustomMetadataChange = (groupName, data, changedPropertyName = null, changedValue = null) => {
+    const updatedTable = {
       ...table,
       customMetadata: {
         ...table.customMetadata,
         [groupName]: data
       }
-    });
+    };
+    
+    // If a specific property changed, track it for apply to all functionality
+    const changedField = changedPropertyName ? `customMetadata.${groupName}.${changedPropertyName}` : null;
+    
+    onChange(updatedTable, changedField, changedValue);
   };
 
 

@@ -3,10 +3,11 @@ import DynamicFieldRenderer from './DynamicFieldRenderer';
 
 const CustomMetadataGroup = ({ group, data, onChange }) => {
   const handleFieldChange = (propertyName, value) => {
-    onChange({
+    const updatedData = {
       ...data,
       [propertyName]: value
-    });
+    };
+    onChange(updatedData, propertyName, value);
   };
 
   return (
