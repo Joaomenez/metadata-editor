@@ -89,52 +89,6 @@ export const metadataApi = {
     return result.filter(offer => offer.active);
   },
 
-  // Export/Import
-  async exportMetadata(tableIds, includeColumns = true) {
-    await delay(1000);
-    const tables = mockTables.filter(table => tableIds.includes(table.guid));
-    
-    const exportData = {
-      version: '1.0',
-      tenant: 'your-org.atlan.com',
-      exportedAt: new Date().toISOString(),
-      assets: {
-        tables: tables.map(table => ({
-          ...table,
-          columns: includeColumns ? (mockColumns[table.guid] || []) : []
-        }))
-      }
-    };
-    
-    return exportData;
-  },
-
-  async validateUpload(jsonData) {
-    await delay(800);
-    // Mock validation
-    const errors = [];
-    const warnings = [];
-    
-    if (!jsonData.assets || !jsonData.assets.tables) {
-      errors.push('Missing tables data');
-    }
-
-    if (jsonData.assets?.tables && jsonData.assets.tables.length === 0) {
-      errors.push('No tables found in the file');
-    }
-
-    if (jsonData.assets?.tables && jsonData.assets.tables.length > 5) {
-      errors.push('Maximum of 5 tables allowed per upload');
-    }
-    
-    return {
-      valid: errors.length === 0,
-      errors,
-      warnings,
-      tableCount: jsonData.assets?.tables?.length || 0
-    };
-  },
-
   // Draft Management
   async saveDraft(draftData) {
     await delay(600);

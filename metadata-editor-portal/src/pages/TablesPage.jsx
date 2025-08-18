@@ -15,7 +15,7 @@ const TablesPage = () => {
   return (
     <PageContainer
       title="Editor de Metadados"
-      description="Navegue, importe e gerencie metadados dos seus ativos de dados"
+      description="Gerencie suas tabelas"
     >
       <TableListView onEditSelected={handleEditSelected} />
     </PageContainer>

@@ -62,6 +62,11 @@ const MetadataEditorView = ({ tables, onBack, onSaveDraft, onApplyChanges, custo
     for (const table of pendingTables) {
       await handleApplyTable(table.guid);
     }
+    
+    // Call the parent's onApplyChanges to handle callback URL redirect
+    if (onApplyChanges) {
+      onApplyChanges();
+    }
   };
 
   const handleApplyToAllTables = () => {

@@ -20,7 +20,6 @@ const AtlanSidebar = () => {
   const menuItems = [
     { id: 'tables', label: 'Editar', icon: Database, path: '/' },
     { id: 'history', label: 'Histórico', icon: History, path: '/history' },
-    { id: 'versions', label: 'Versões', icon: GitBranch, path: '/versions' },
   ];
 
   const getActiveSection = () => {
@@ -28,7 +27,6 @@ const AtlanSidebar = () => {
     if (currentPath === '/') return 'tables';
     if (currentPath === '/editor') return 'tables';
     if (currentPath === '/history') return 'history';
-    if (currentPath === '/versions') return 'versions';
     return 'tables';
   };
 

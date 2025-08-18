@@ -4,7 +4,6 @@ import TableFilters from './TableFilters';
 import SearchBar from './SearchBar';
 import SelectionCounter from './SelectionCounter';
 import BulkActions from './BulkActions';
-import UploadSection from './UploadSection';
 import { Filter, ChevronDown, ChevronUp, LayoutGrid, List } from 'lucide-react';
 import { mockTables } from '../../data/mockData';
 
@@ -20,7 +19,6 @@ const TableListView = ({ onEditSelected }) => {
   });
   const [loading, setLoading] = useState(true);
   const [showFilters, setShowFilters] = useState(false);
-  const [showUploadSection, setShowUploadSection] = useState(false);
   const [compactView, setCompactView] = useState(false);
 
   useEffect(() => {
@@ -63,24 +61,12 @@ const TableListView = ({ onEditSelected }) => {
     if (newSelected.has(tableId)) {
       newSelected.delete(tableId);
     } else {
-      if (newSelected.size < 5) {
-        newSelected.add(tableId);
-      } else {
-        alert('Você pode selecionar no máximo 5 tabelas por vez');
-      }
+      newSelected.add(tableId);
     }
     
     setSelectedTables(newSelected);
   };
 
-  const handleSelectAll = () => {
-    if (selectedTables.size > 0) {
-      setSelectedTables(new Set());
-    } else {
-      const tablesToSelect = filteredTables.slice(0, 5);
-      setSelectedTables(new Set(tablesToSelect.map(t => t.guid)));
-    }
-  };
 
   const handleEditSelected = () => {
     const selected = Array.from(selectedTables).map(id => 
@@ -93,59 +79,14 @@ const TableListView = ({ onEditSelected }) => {
     setSelectedTables(new Set());
   };
 
-  const handleExportSelected = () => {
-    const selected = Array.from(selectedTables).map(id => 
-      tables.find(t => t.guid === id)
-    );
-    
-    // Criar estrutura JSON apenas com dados editáveis (descrições e metadados customizados)
-    const exportData = {
-      metadata: {
-        exportDate: new Date().toISOString(),
-        version: "1.0",
-        source: "Atlan Metadata Editor Portal",
-        totalTables: selected.length,
-        description: "Exportação contém apenas dados editáveis: descrições e metadados customizados"
-      },
-      assets: {
-        tables: selected.map(table => ({
-          guid: table.guid,
-          name: table.name,
-          qualifiedName: table.qualifiedName,
-          // Apenas dados editáveis
-          attributes: {
-            description: table.description || ""
-          },
-          customMetadata: table.customMetadata || {},
-          columns: (table.columns || []).map(column => ({
-            guid: column.guid,
-            name: column.name,
-            qualifiedName: `${table.qualifiedName}.${column.name}`,
-            // Apenas dados editáveis das colunas
-            attributes: {
-              description: column.description || ""
-            },
-            customMetadata: column.customMetadata || {}
-          }))
-        }))
-      }
-    };
-
-    // Criar arquivo para download
-    const jsonString = JSON.stringify(exportData, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `atlan_metadata_editable_${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    alert(`${selected.length} tabela(s) exportada(s) com dados editáveis!`);
+  const handleSelectAll = () => {
+    if (selectedTables.size === filteredTables.length) {
+      setSelectedTables(new Set());
+    } else {
+      setSelectedTables(new Set(filteredTables.map(t => t.guid)));
+    }
   };
+
 
   if (loading) {
     return (
@@ -212,19 +153,14 @@ const TableListView = ({ onEditSelected }) => {
             placeholder="Buscar tabelas por nome ou qualified name..."
           />
 
-          {/* Upload Section */}
-          <div className={`overflow-hidden transition-all duration-500 ease-in-out ${showUploadSection ? 'max-h-96 opacity-100 mt-4 mb-4' : 'max-h-0 opacity-0'}`}>
-            <UploadSection />
-          </div>
           
           <div className="mt-4 flex justify-end">
             <BulkActions 
               onEdit={handleEditSelected}
               onClear={handleClearSelection}
-              onExport={handleExportSelected}
-              onImport={() => setShowUploadSection(!showUploadSection)}
-              showingUpload={showUploadSection}
+              onSelectAll={handleSelectAll}
               selectedCount={selectedTables.size}
+              totalCount={filteredTables.length}
               disabled={selectedTables.size === 0}
             />
           </div>
@@ -238,7 +174,6 @@ const TableListView = ({ onEditSelected }) => {
               compact={compactView}
               isSelected={selectedTables.has(table.guid)}
               onSelect={() => handleSelectTable(table.guid)}
-              disabled={!selectedTables.has(table.guid) && selectedTables.size >= 5}
             />
           ))}
         </div>
@@ -258,7 +193,7 @@ const TableListView = ({ onEditSelected }) => {
           <div className="shadow-2xl rounded-lg">
             <SelectionCounter 
               selected={selectedTables.size}
-              max={5}
+              total={filteredTables.length}
             />
           </div>
         </div>

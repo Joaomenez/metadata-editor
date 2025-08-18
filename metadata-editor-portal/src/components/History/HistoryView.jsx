@@ -238,7 +238,7 @@ const HistoryView = () => {
                         </div>
                         
                         <span className="text-sm text-gray-500">
-                          {totalChanges} alteração{totalChanges > 1 ? 'ões' : ''}
+                          {totalChanges} {totalChanges > 1 ? 'alterações' : 'alteração'}
                         </span>
                       </div>
 

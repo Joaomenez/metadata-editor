@@ -1,9 +1,23 @@
 import React from 'react';
-import { Edit3, X, Download, Upload } from 'lucide-react';
+import { Edit3, X, CheckSquare } from 'lucide-react';
 
-const BulkActions = ({ onEdit, onClear, onExport, onImport, showingUpload, selectedCount, disabled = false }) => {
+const BulkActions = ({ onEdit, onClear, onSelectAll, selectedCount, totalCount, disabled = false }) => {
+  const isAllSelected = selectedCount === totalCount && totalCount > 0;
+
   return (
     <div className="flex items-center space-x-2">
+      <button
+        onClick={onSelectAll}
+        className={`h-[35px] flex items-center space-x-2 px-3 text-sm font-medium rounded-lg border shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 ${
+          isAllSelected
+            ? 'bg-blue-50 text-blue-700 border-blue-300'
+            : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200'
+        }`}
+      >
+        <CheckSquare className="w-4 h-4" />
+        <span>{isAllSelected ? 'Desmarcar todos' : 'Selecionar todos'}</span>
+      </button>
+
       <button
         onClick={onEdit}
         disabled={disabled}
@@ -14,32 +28,7 @@ const BulkActions = ({ onEdit, onClear, onExport, onImport, showingUpload, selec
         }`}
       >
         <Edit3 className="w-4 h-4" />
-        <span>Editar Selecionadas ({selectedCount})</span>
-      </button>
-
-      <button
-        onClick={onImport}
-        className={`h-[35px] flex items-center space-x-2 px-3 text-sm font-medium rounded-lg border shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 ${
-          showingUpload
-            ? 'bg-blue-50 text-blue-700 border-blue-300'
-            : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200'
-        }`}
-      >
-        <Upload className="w-4 h-4" />
-        <span>Importar metadados</span>
-      </button>
-
-      <button
-        onClick={onExport}
-        disabled={disabled}
-        className={`h-[35px] flex items-center space-x-2 px-3 text-sm font-medium rounded-lg border shadow-sm transition-colors duration-150 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 ${
-          disabled
-            ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
-            : 'bg-white hover:bg-gray-50 text-gray-700 border-gray-200'
-        }`}
-      >
-        <Download className="w-4 h-4" />
-        <span>Exportar JSON ({selectedCount})</span>
+        <span>Editar Selecionadas ({selectedCount} de {totalCount})</span>
       </button>
       
       {selectedCount > 0 && (
