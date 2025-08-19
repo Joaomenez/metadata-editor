@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padronização de Desenvolvimento - Slides para PowerPoint</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .slide-container {
+            max-width: 1920px;
+            margin: 0 auto;
+            background: white;
+        }
+
+        .slide {
+            width: 100%;
+            height: 1080px;
+            padding: 80px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 5px solid #f0f0f0;
+            page-break-after: always;
+        }
+
+        /* Slide 1 - Título */
+        .title-slide {
+            background: linear-gradient(135deg, #ff6200 0%, #ff7a2e 100%);
+            color: white;
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .title-slide h1 {
+            font-size: 4rem;
+            margin-bottom: 40px;
+            font-weight: 700;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .title-slide h2 {
+            font-size: 2rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        /* Slide Headers */
+        .slide-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .slide-header h1 {
+            font-size: 3rem;
+            color: #ff6200;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .slide-header p {
+            font-size: 1.4rem;
+            color: #666;
+        }
+
+        /* Slide 2 - Cenário Atual */
+        .current-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            height: 100%;
+        }
+
+        .tech-section {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
+            padding: 40px;
+            border-radius: 20px;
+            border: 3px solid #ff6200;
+        }
+
+        .tech-section h3 {
+            color: #ff6200;
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .tech-item {
+            background: #ff6200;
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .problems-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .problem-item {
+            background: white;
+            border-left: 8px solid #ff6200;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(255, 98, 0, 0.1);
+        }
+
+        .problem-item h4 {
+            color: #ff6200;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+
+        .problem-item p {
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        /* Slide 3 - Solução */
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            height: 100%;
+        }
+
+        .solution-card {
+            background: linear-gradient(135deg, #ff6200 0%, #ff7a2e 100%);
+            color: white;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .solution-card:hover {
+            transform: scale(1.05);
+        }
+
+        .solution-icon {
+            font-size: 4rem;
+            margin-bottom: 30px;
+        }
+
+        .solution-card h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .solution-card p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* Slide 4 - Arquitetura */
+        .architecture-content {
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .arch-subtitle {
+            font-size: 1.8rem;
+            color: #ff6200;
+            margin-bottom: 60px;
+            font-weight: 600;
+        }
+
+        .arch-flow {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 60px 0;
+        }
+
+        .arch-box {
+            background: white;
+            border: 4px solid #ff6200;
+            border-radius: 20px;
+            padding: 40px 30px;
+            width: 280px;
+            text-align: center;
+        }
+
+        .arch-box h4 {
+            font-size: 1.4rem;
+            color: #ff6200;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .arch-box.focus {
+            background: #ff6200;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .arch-box.focus h4 {
+            color: white;
+        }
+
+        .arch-arrow {
+            font-size: 4rem;
+            color: #ff6200;
+            font-weight: bold;
+        }
+
+        .arch-highlight {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
+            border: 3px solid #ff6200;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 40px;
+        }
+
+        .arch-highlight p {
+            font-size: 1.6rem;
+            color: #ff6200;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        /* Slide 5 - Benefícios */
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            height: 100%;
+        }
+
+        .benefit-card {
+            background: white;
+            border: 4px solid #ff6200;
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .benefit-card:hover {
+            background: #ff6200;
+            color: white;
+        }
+
+        .benefit-icon {
+            font-size: 4rem;
+            color: #ff6200;
+            margin-bottom: 30px;
+        }
+
+        .benefit-card:hover .benefit-icon {
+            color: white;
+        }
+
+        .benefit-card h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .benefit-card p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* Slide 6 - Próximos Passos */
+        .next-steps-content {
+            text-align: center;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .ownership-card {
+            background: linear-gradient(135deg, #ff6200 0%, #ff7a2e 100%);
+            color: white;
+            padding: 60px;
+            border-radius: 30px;
+            margin: 40px 0;
+        }
+
+        .ownership-card h3 {
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .ownership-card p {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .steps-list {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
+            border: 3px solid #ff6200;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: left;
+        }
+
+        .steps-list h4 {
+            color: #ff6200;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .steps-list ul {
+            font-size: 1.2rem;
+            color: #555;
+        }
+
+        .steps-list li {
+            margin-bottom: 15px;
+            padding-left: 10px;
+        }
+
+        /* Slide adicional - Referências */
+        .references-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .reference-card {
+            background: white;
+            border: 4px solid #ff6200;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .reference-card h3 {
+            color: #ff6200;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .reference-card .company {
+            background: #ff6200;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .reference-card p {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .reference-highlight {
+            background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%);
+            border-left: 8px solid #ff6200;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 10px;
+        }
+
+        .reference-highlight p {
+            font-size: 1.4rem;
+            color: #ff6200;
+            font-weight: 600;
+            font-style: italic;
+            text-align: center;
+            margin: 0;
+        }
+        @media print {
+            .slide {
+                page-break-after: always;
+                height: auto;
+                min-height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        
+        <!-- Slide 1: Título -->
+        <div class="slide title-slide">
+            <h1>Estratégia de Padronização</h1>
+            <h2>Acelerando o Desenvolvimento através de Padrões e Automação</h2>
+            <div style="margin-top: 60px; font-size: 1.4rem; opacity: 0.8;">
+                <p>Inspirado em práticas de mercado consolidadas</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Cenário Atual -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🎯 Cenário Atual</h1>
+                <p>Stack consolidado, mas com oportunidades de otimização</p>
+            </div>
+            <div class="current-grid">
+                <div class="tech-section">
+                    <h3>Stack Tecnológico</h3>
+                    <div class="tech-grid">
+                        <div class="tech-item">Python</div>
+                        <div class="tech-item">AWS ECS</div>
+                        <div class="tech-item">Lambda</div>
+                        <div class="tech-item">S3</div>
+                        <div class="tech-item">DynamoDB</div>
+                        <div class="tech-item">RDS MySQL</div>
+                        <div class="tech-item">Kinesis</div>
+                        <div class="tech-item">SQS</div>
+                        <div class="tech-item">SNS</div>
+                    </div>
+                </div>
+                <div class="problems-section">
+                    <div class="problem-item">
+                        <h4>⏱️ Retrabalho Constante</h4>
+                        <p>Times reimplementando CRUD, Workers, Async Request-Reply</p>
+                    </div>
+                    <div class="problem-item">
+                        <h4>🏗️ Gaps Arquiteturais</h4>
+                        <p>Código não escalável, dificuldades em OO e manutenção</p>
+                    </div>
+                    <div class="problem-item">
+                        <h4>🧪 Testabilidade Limitada</h4>
+                        <p>Códigos difíceis de testar, aumentando bugs</p>
+                    </div>
+                    <div class="problem-item">
+                        <h4>📚 Curva de Aprendizado</h4>
+                        <p>Novos engenheiros demoram para se tornarem produtivos</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Solução -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🚀 Ecossistema de Padronização</h1>
+                <p>Solução integrada para acelerar desenvolvimento</p>
+                <div style="background: linear-gradient(135deg, #fff5f0 0%, #ffffff 100%); border: 2px solid #ff6200; border-radius: 15px; padding: 20px; margin: 20px auto; max-width: 800px;">
+                    <p style="color: #ff6200; font-size: 1.1rem; font-weight: 600; margin: 0;">
+                        📊 <strong>Referências de Mercado:</strong> Nubank e XP Investimentos adotam estratégias similares com seus boilerplates<br>
+                        XP: Strategio (microserviços) + Maestro (Workers)
+                    </p>
+                </div>
+            </div>
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <div class="solution-icon">🛠️</div>
+                    <h3>Framework Core</h3>
+                    <p>Arquitetura hexagonal com decorators, injeção de dependência automática e abstrações reutilizáveis</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-icon">🤖</div>
+                    <h3>Copilot Rules</h3>
+                    <p>Instruções automatizadas para IDEs com GitHub Copilot, acelerando o desenvolvimento</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-icon">📖</div>
+                    <h3>Documentação de Referência</h3>
+                    <p>Padrões de design, nomenclaturas e guidelines para abstrações e camadas</p>
+                </div>
+                <div class="solution-card">
+                    <div class="solution-icon">🔄</div>
+                    <h3>Processo de Colaboração</h3>
+                    <p>Revisões estruturadas, gestão de issues e controle rigoroso de versões</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Arquitetura -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🏗️ Arquitetura da Solução</h1>
+                <p>Developer Experience otimizada</p>
+            </div>
+            <div class="architecture-content">
+                <div class="arch-subtitle">
+                    Automatização de Complexidades + Foco no Essencial
+                </div>
+                <div class="arch-flow">
+                    <div class="arch-box">
+                        <h4>Setup Automático</h4>
+                        <p>Logging, Traces distribuídos, Retries implementados automaticamente</p>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-box">
+                        <h4>Adapters Reutilizáveis</h4>
+                        <p>Inbound/Outbound adapters prontos para uso</p>
+                    </div>
+                    <div class="arch-arrow">→</div>
+                    <div class="arch-box focus">
+                        <h4>FOCO: USE CASE</h4>
+                        <p>Desenvolvedor implementa apenas lógica de negócio</p>
+                    </div>
+                </div>
+                <div class="arch-highlight">
+                    <p>"Desenvolvedores focam apenas no que realmente importa: a lógica de negócio"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Benefícios -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>📈 Benefícios Estratégicos</h1>
+                <p>Impacto organizacional esperado</p>
+            </div>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <div class="benefit-icon">⚡</div>
+                    <h3>Aceleração do Desenvolvimento</h3>
+                    <p>Redução significativa no tempo de criação de novos microserviços e features</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🎯</div>
+                    <h3>Consistência Organizacional</h3>
+                    <p>Padrões unificados em todos os times de engenharia</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🚀</div>
+                    <h3>Onboarding Acelerado</h3>
+                    <p>Novos engenheiros se tornam produtivos em tempo muito menor</p>
+                </div>
+                <div class="benefit-card">
+                    <div class="benefit-icon">🔧</div>
+                    <h3>Manutenibilidade</h3>
+                    <p>Código mais limpo, testável e evolutivo por design</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Referências de Mercado -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>🏢 Referências de Mercado</h1>
+                <p>Estratégias comprovadas em empresas líderes</p>
+            </div>
+            <div class="references-content">
+                <div class="reference-card">
+                    <div class="company">Nubank</div>
+                    <h3>Boilerplates para Microserviços</h3>
+                    <p>• Framework interno padronizado para criação de microserviços</p>
+                    <p>• Aceleração significativa no desenvolvimento de novos serviços</p>
+                    <p>• Consistência arquitetural em toda a organização</p>
+                </div>
+                
+                <div class="reference-card">
+                    <div class="company">XP Investimentos</div>
+                    <h3>Strategio + Maestro</h3>
+                    <p>• <strong>Strategio:</strong> Framework para microserviços tradicionais</p>
+                    <p>• <strong>Maestro:</strong> Framework especializado para Workers</p>
+                    <p>• Diferenciação por tipo de aplicação, mantendo padrões consistentes</p>
+                </div>
+
+                <div class="reference-highlight">
+                    <p>"Empresas de alta performance adotam frameworks internos para acelerar desenvolvimento e garantir qualidade"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Governança e Próximos Passos -->
+        <div class="slide">
+            <div class="slide-header">
+                <h1>👥 Governança e Próximos Passos</h1>
+                <p>Estrutura de implementação e evolução</p>
+            </div>
+            <div class="next-steps-content">
+                <div class="ownership-card">
+                    <h3>🏛️ Ownership</h3>
+                    <p><strong>Time de Especialistas</strong> responsável pela criação, evolução e manutenção do ecossistema</p>
+                    <p>Construção incremental com validação contínua junto aos times de desenvolvimento</p>
+                </div>
+                <div class="steps-list">
+                    <h4>Abordagem de Implementação</h4>
+                    <ul>
+                        <li>• <strong>Desenvolvimento iterativo</strong> do framework core</li>
+                        <li>• <strong>Validação piloto</strong> com times selecionados</li>
+                        <li>• <strong>Refinamento baseado em feedback</strong> dos desenvolvedores</li>
+                        <li>• <strong>Rollout gradual</strong> para todos os times</li>
+                        <li>• <strong>Evolução contínua</strong> do ecossistema</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

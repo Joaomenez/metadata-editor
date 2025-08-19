@@ -7,7 +7,6 @@ import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/Auth/ProtectedRoute';
 import LoginPage from './components/Auth/LoginPage';
 import AtlanHeader from './components/Layout/AtlanHeader';
-import AtlanSidebar from './components/Layout/AtlanSidebar';
 import AssetImportPage from './pages/AssetImportPage';
 
 // Initialize MSAL instance
@@ -30,9 +29,7 @@ function App() {
                   <div className="h-screen flex flex-col" style={{ backgroundColor: '#f4f6fd' }}>
                     <AtlanHeader />
                     
-                    <div className="flex-1 flex overflow-hidden">
-                      <AtlanSidebar />
-                      
+                    <div className="flex-1 overflow-hidden">
                       <Routes>
                         <Route path="/" element={<AssetImportPage />} />
                       </Routes>
