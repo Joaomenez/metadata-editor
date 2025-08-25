@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CloudCode - Estratégia de Adoção</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 100%);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .presentation-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-container {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        .slide-content {
+            height: 100%;
+            background: white;
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid #e5e7eb;
+            padding: 2rem;
+            display: none;
+        }
+
+        .slide-content.active {
+            display: block;
+        }
+
+        .navigation {
+            padding: 1.5rem;
+            background: white;
+            box-shadow: 0 -10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 64rem;
+            margin: 0 auto;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:enabled {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .nav-btn:enabled:hover {
+            background: #2563eb;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            background: #f3f4f6;
+            color: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .indicators {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .indicator {
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .indicator.active {
+            background: #3b82f6;
+            transform: scale(1.25);
+        }
+
+        .indicator:not(.active) {
+            background: #d1d5db;
+        }
+
+        .indicator:not(.active):hover {
+            background: #9ca3af;
+        }
+
+        .slide-counter {
+            text-align: center;
+            margin-top: 1rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        /* Slide Styles */
+        .text-center { text-align: center; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .h-full { height: 100%; }
+        .space-y-6 > * + * { margin-top: 1.5rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-1 > * + * { margin-top: 0.25rem; }
+        .space-x-6 > * + * { margin-left: 1.5rem; }
+        .space-x-2 > * + * { margin-left: 0.5rem; }
+
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+        .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+        .gap-8 { gap: 2rem; }
+        .gap-12 { gap: 3rem; }
+
+        .title-gradient {
+            background: linear-gradient(to right, #2563eb, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .subtitle {
+            font-size: 2rem;
+            font-weight: 300;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-align: center;
+            background: linear-gradient(to right, #2563eb, #7c3aed);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .card {
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 1px solid;
+        }
+
+        .card-green {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .card-blue {
+            background: #eff6ff;
+            border-color: #bfdbfe;
+        }
+
+        .card-purple {
+            background: #faf5ff;
+            border-color: #d8b4fe;
+        }
+
+        .card-orange {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .card-yellow {
+            background: #fffbeb;
+            border-color: #fde68a;
+        }
+
+        .icon-circle {
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .bg-green { background-color: #22c55e; }
+        .bg-blue { background-color: #3b82f6; }
+        .bg-purple { background-color: #a855f7; }
+        .bg-orange { background-color: #f97316; }
+        .bg-yellow { background-color: #eab308; }
+        .bg-red { background-color: #ef4444; }
+        .bg-indigo { background-color: #6366f1; }
+        .bg-teal { background-color: #14b8a6; }
+
+        .text-green { color: #16a34a; }
+        .text-blue { color: #2563eb; }
+        .text-purple { color: #9333ea; }
+        .text-orange { color: #ea580c; }
+        .text-yellow { color: #ca8a04; }
+        .text-red { color: #dc2626; }
+        .text-indigo { color: #4f46e5; }
+        .text-teal { color: #0f766e; }
+        .text-gray { color: #6b7280; }
+
+        .workflow-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 75%;
+        }
+
+        .workflow-column {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .workflow-arrow {
+            width: 20%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 3rem;
+            color: #3b82f6;
+        }
+
+        .workflow-step {
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .old-step {
+            background: #f3f4f6;
+            color: #374151;
+        }
+
+        .new-step {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1d4ed8;
+        }
+
+        .agents-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .agents-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1.5rem;
+        }
+
+        .agent-card {
+            width: 16rem;
+            padding: 1rem;
+            border-radius: 0.75rem;
+            border: 2px solid;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .agent-number {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.875rem;
+            margin-right: 0.75rem;
+        }
+
+        .agent-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .arrow-horizontal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 0.5rem;
+        }
+
+        .arrow-vertical {
+            display: flex;
+            justify-content: center;
+        }
+
+        .arrow-down {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .arrow-line {
+            width: 0.25rem;
+            height: 2rem;
+            background-color: #60a5fa;
+        }
+
+        .arrow-tip {
+            width: 0;
+            height: 0;
+            border-left: 1rem solid transparent;
+            border-right: 1rem solid transparent;
+            border-top: 2rem solid #3b82f6;
+        }
+
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 64rem;
+            width: 100%;
+        }
+
+        .step-card {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 0.75rem;
+            border-left: 4px solid;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.25rem;
+            margin-right: 1.5rem;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            height: 75%;
+        }
+
+        .conclusion-stats {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            max-width: 32rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .divider {
+            width: 6rem;
+            height: 0.25rem;
+            background: linear-gradient(to right, #2563eb, #7c3aed);
+            margin: 0 auto 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="presentation-container">
+        <!-- Slide Container -->
+        <div class="slide-container">
+            <!-- Slide 1: Título -->
+            <div class="slide-content active" id="slide-0">
+                <div class="flex flex-col items-center justify-center h-full text-center">
+                    <div style="margin-bottom: 2rem;">
+                        <div style="display: inline-flex; align-items: center; justify-content: center; width: 5rem; height: 5rem; border-radius: 50%; background: linear-gradient(to right, #2563eb, #7c3aed); margin-bottom: 1.5rem;">
+                            <span style="color: white; font-size: 2.5rem;">⚡</span>
+                        </div>
+                    </div>
+                    <h1 class="title-gradient">CloudCode</h1>
+                    <h2 class="subtitle">Estratégia de Adoção para Engineering Teams</h2>
+                    <div class="divider"></div>
+                    <p style="font-size: 1.125rem; color: #6b7280;">
+                        Piloto de Transformação no Fluxo de Desenvolvimento
+                    </p>
+                </div>
+            </div>
+
+            <!-- Slide 2: O Momento Ideal -->
+            <div class="slide-content" id="slide-1">
+                <div class="h-full">
+                    <h1 class="section-title">O Momento Ideal</h1>
+                    <div class="grid grid-cols-2 gap-8" style="height: 75%;">
+                        <div class="space-y-6">
+                            <div class="card card-green">
+                                <div class="icon-circle bg-green">✓</div>
+                                <h3 style="font-size: 1.25rem; font-weight: 600; color: #166534; margin-bottom: 0.5rem;">Framework Hexagonal</h3>
+                                <p class="text-green">Novo framework backend criado e pronto para validação</p>
+                            </div>
+                            <div class="card card-blue">
+                                <div class="icon-circle bg-blue">⚙️</div>
+                                <h3 style="font-size: 1.25rem; font-weight: 600; color: #1e40af; margin-bottom: 0.5rem;">Guidelines Atualizadas</h3>
+                                <p class="text-blue">Novos padrões de desenvolvimento estabelecidos</p>
+                            </div>
+                        </div>
+                        <div class="space-y-6">
+                            <div class="card card-purple">
+                                <div class="icon-circle bg-purple">🎯</div>
+                                <h3 style="font-size: 1.25rem; font-weight: 600; color: #7c2d12; margin-bottom: 0.5rem;">Projetos Reais</h3>
+                                <p class="text-purple">Matrix e ODI como casos de uso concretos</p>
+                            </div>
+                            <div class="card card-orange">
+                                <div class="icon-circle bg-orange">⚡</div>
+                                <h3 style="font-size: 1.25rem; font-weight: 600; color: #c2410c; margin-bottom: 0.5rem;">CloudCode Disponível</h3>
+                                <p class="text-orange">Tecnologia madura e pronta para implementação</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 3: Novo Fluxo de Trabalho -->
+            <div class="slide-content" id="slide-2">
+                <div class="h-full">
+                    <h1 class="section-title">Transformação no Fluxo de Trabalho</h1>
+                    <div class="workflow-section">
+                        <div class="workflow-column">
+                            <h3 style="font-size: 1.5rem; font-weight: 600; color: #374151; margin-bottom: 1.5rem;">Fluxo Atual</h3>
+                            <div class="space-y-3">
+                                <div class="workflow-step old-step">
+                                    <p>💭 Penso na solução</p>
+                                </div>
+                                <div class="workflow-step old-step">
+                                    <p>⌨️ Escrevo o código</p>
+                                </div>
+                                <div class="workflow-step old-step">
+                                    <p>🐛 Corrijo bugs</p>
+                                </div>
+                                <div class="workflow-step old-step">
+                                    <p>📝 Documento depois</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="workflow-arrow">➡️</div>
+
+                        <div class="workflow-column">
+                            <h3 style="font-size: 1.5rem; font-weight: 600; color: #1e40af; margin-bottom: 1.5rem;">Novo Fluxo CloudCode</h3>
+                            <div class="space-y-3">
+                                <div class="workflow-step new-step">
+                                    <p>🔍 <strong>Discovery:</strong> Analiso o que preciso</p>
+                                </div>
+                                <div class="workflow-step new-step">
+                                    <p>📋 <strong>Plano:</strong> CloudCode detalha a solução</p>
+                                </div>
+                                <div class="workflow-step new-step">
+                                    <p>✅ <strong>Revisão:</strong> Aprovo e refino o plano</p>
+                                </div>
+                                <div class="workflow-step new-step">
+                                    <p>⚡ <strong>Execução:</strong> CloudCode implementa</p>
+                                </div>
+                                <div class="workflow-step new-step">
+                                    <p>📖 <strong>Documentação:</strong> Automática</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 4: Agentes Especializados -->
+            <div class="slide-content" id="slide-3">
+                <div class="h-full">
+                    <h1 class="section-title">Agentes Especializados</h1>
+                    <p class="text-center" style="font-size: 1.125rem; color: #6b7280; margin-bottom: 2rem;">Execução Sequencial Automatizada</p>
+                    
+                    <div class="agents-grid" style="height: 60%;">
+                        <!-- Row 1 -->
+                        <div class="agents-row">
+                            <!-- Agent 1 - Python Pro -->
+                            <div class="agent-card card-green">
+                                <div class="agent-header">
+                                    <div class="agent-number bg-green">1</div>
+                                    <div class="agent-icon bg-green">
+                                        <span style="color: white;">🐍</span>
+                                    </div>
+                                </div>
+                                <h3 style="font-size: 1.125rem; font-weight: bold; color: #166534; margin-bottom: 0.5rem;">Python Pro</h3>
+                                <ul style="color: #16a34a; font-size: 0.75rem;" class="space-y-1">
+                                    <li>• Especialista em Python</li>
+                                    <li>• Best practices automáticas</li>
+                                    <li>• Code review integrado</li>
+                                </ul>
+                            </div>
+
+                            <!-- Arrow 1 -->
+                            <div class="arrow-horizontal">
+                                <span style="font-size: 1.5rem; color: #3b82f6; margin-bottom: 0.25rem;">➡️</span>
+                                <span style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">ENTÃO</span>
+                            </div>
+
+                            <!-- Agent 2 - Test Engineer -->
+                            <div class="agent-card card-purple">
+                                <div class="agent-header">
+                                    <div class="agent-number bg-purple">2</div>
+                                    <div class="agent-icon bg-purple">
+                                        <span style="color: white;">🧪</span>
+                                    </div>
+                                </div>
+                                <h3 style="font-size: 1.125rem; font-weight: bold; color: #7c2d12; margin-bottom: 0.5rem;">Test Engineer</h3>
+                                <ul style="color: #9333ea; font-size: 0.75rem;" class="space-y-1">
+                                    <li>• Testes automatizados</li>
+                                    <li>• Coverage reports</li>
+                                    <li>• Quality assurance</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Vertical Arrow -->
+                        <div class="arrow-vertical">
+                            <div class="arrow-down">
+                                <div class="arrow-line"></div>
+                                <div class="arrow-tip"></div>
+                                <span style="font-size: 0.75rem; color: #6b7280; font-weight: 600; margin-top: 0.25rem;">ENTÃO</span>
+                            </div>
+                        </div>
+
+                        <!-- Row 2 -->
+                        <div class="agents-row">
+                            <!-- Agent 3 - Dr. Doc -->
+                            <div class="agent-card card-yellow">
+                                <div class="agent-header">
+                                    <div class="agent-number bg-yellow">3</div>
+                                    <div class="agent-icon bg-yellow">
+                                        <span style="color: white;">📚</span>
+                                    </div>
+                                </div>
+                                <h3 style="font-size: 1.125rem; font-weight: bold; color: #92400e; margin-bottom: 0.5rem;">Dr. Doc</h3>
+                                <ul style="color: #ca8a04; font-size: 0.75rem;" class="space-y-1">
+                                    <li>• Documentação automática</li>
+                                    <li>• README generation</li>
+                                    <li>• API documentation</li>
+                                </ul>
+                            </div>
+
+                            <!-- Arrow 3 -->
+                            <div class="arrow-horizontal">
+                                <span style="font-size: 1.5rem; color: #3b82f6; margin-bottom: 0.25rem;">➡️</span>
+                                <span style="font-size: 0.75rem; color: #6b7280; font-weight: 600;">ENTÃO</span>
+                            </div>
+
+                            <!-- Agent 4 - GitFlow Master -->
+                            <div class="agent-card card-blue">
+                                <div class="agent-header">
+                                    <div class="agent-number bg-blue">4</div>
+                                    <div class="agent-icon bg-blue">
+                                        <span style="color: white;">🔀</span>
+                                    </div>
+                                </div>
+                                <h3 style="font-size: 1.125rem; font-weight: bold; color: #1e40af; margin-bottom: 0.5rem;">GitFlow Master</h3>
+                                <ul style="color: #2563eb; font-size: 0.75rem;" class="space-y-1">
+                                    <li>• Gerenciamento de branches</li>
+                                    <li>• Commits padronizados</li>
+                                    <li>• Release automation</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center" style="margin-top: 1.5rem;">
+                        <div style="display: inline-flex; align-items: center; background: linear-gradient(to right, #eff6ff, #faf5ff); padding: 0.75rem 1.5rem; border-radius: 9999px; border: 1px solid #bfdbfe;">
+                            <span style="color: #2563eb; margin-right: 0.5rem;">⚡</span>
+                            <p style="font-size: 1.125rem; font-weight: 600; color: #374151;">
+                                <strong>Comando Único:</strong> Executa toda a sequência automaticamente
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 5: Estrutura do Piloto -->
+            <div class="slide-content" id="slide-4">
+                <div class="h-full">
+                    <h1 class="section-title">Estrutura do Piloto</h1>
+                    <div class="grid grid-cols-2 gap-12" style="height: 75%;">
+                        <div class="space-y-6">
+                            <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 2px solid #bfdbfe; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                                <div class="icon-circle bg-blue">👥</div>
+                                <h3 style="font-size: 1.5rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Equipe Selecionada</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <div style="width: 1rem; height: 1rem; background: #22c55e; border-radius: 50%; margin-right: 0.75rem;"></div>
+                                        <span style="color: #374151;"><strong>2 Seniors Backend</strong></span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div style="width: 1rem; height: 1rem; background: #3b82f6; border-radius: 50%; margin-right: 0.75rem;"></div>
+                                        <span style="color: #374151;"><strong>2 Seniors Frontend</strong></span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div style="width: 1rem; height: 1rem; background: #a855f7; border-radius: 50%; margin-right: 0.75rem;"></div>
+                                        <span style="color: #374151;"><strong>Experiência + Feedback qualificado</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 2px solid #bbf7d0; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                                <div class="icon-circle bg-green">🎯</div>
+                                <h3 style="font-size: 1.5rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Projetos Piloto</h3>
+                                <div class="space-y-2">
+                                    <p style="color: #374151;">• <strong>Matrix:</strong> Framework hexagonal</p>
+                                    <p style="color: #374151;">• <strong>ODI:</strong> Guidelines aplicadas</p>
+                                    <p style="color: #374151;">• <strong>Casos reais:</strong> Teste genuíno</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 2px solid #fed7aa; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                                <div class="icon-circle bg-orange">⏰</div>
+                                <h3 style="font-size: 1.5rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Timeline</h3>
+                                <div class="space-y-3">
+                                    <div class="flex items-center">
+                                        <div style="width: 2rem; height: 2rem; background: #fff7ed; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; color: #f97316; font-weight: bold; font-size: 0.875rem;">6</div>
+                                        <span style="color: #374151;"><strong>6 semanas de duração</strong></span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div style="width: 2rem; height: 2rem; background: #fff7ed; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; color: #f97316; font-weight: bold; font-size: 0.875rem;">📅</div>
+                                        <span style="color: #374151;"><strong>Reuniões diárias</strong></span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div style="width: 2rem; height: 2rem; background: #fff7ed; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 0.75rem; color: #f97316; font-weight: bold; font-size: 0.875rem;">📊</div>
+                                        <span style="color: #374151;"><strong>Feedback contínuo</strong></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="background: white; padding: 1.5rem; border-radius: 0.75rem; border: 2px solid #d8b4fe; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);">
+                                <div class="icon-circle bg-purple">⚙️</div>
+                                <h3 style="font-size: 1.5rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Evolução Colaborativa</h3>
+                                <div class="space-y-2">
+                                    <p style="color: #374151;">• Times sugerem novos agentes</p>
+                                    <p style="color: #374151;">• Refinamento conjunto</p>
+                                    <p style="color: #374151;">• Criação de comandos personalizados</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 6: Métricas de Sucesso -->
+            <div class="slide-content" id="slide-5">
+                <div class="h-full">
+                    <h1 class="section-title">Como Mediremos o Sucesso</h1>
+                    <div class="metrics-grid">
+                        <div class="space-y-6">
+                            <h3 style="font-size: 1.5rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Métricas Quantitativas</h3>
+                            <div class="space-y-4">
+                                <div style="padding: 1rem; background: #f0fdf4; border-radius: 0.5rem; border: 1px solid #bbf7d0;">
+                                    <div class="flex items-center">
+                                        <span style="color: #16a34a; margin-right: 0.75rem; font-size: 1.5rem;">📈</span>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #166534;">Lead Time</h4>
+                                            <p style="color: #16a34a; font-size: 0.875rem;">Tempo de entrega das user stories</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="padding: 1rem; background: #eff6ff; border-radius: 0.5rem; border: 1px solid #bfdbfe;">
+                                    <div class="flex items-center">
+                                        <span style="color: #2563eb; margin-right: 0.75rem; font-size: 1.5rem;">⏰</span>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #1e40af;">Code Review Time</h4>
+                                            <p style="color: #2563eb; font-size: 0.875rem;">Tempo de revisão de código</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="padding: 1rem; background: #fef2f2; border-radius: 0.5rem; border: 1px solid #fecaca;">
+                                    <div class="flex items-center">
+                                        <span style="color: #dc2626; margin-right: 0.75rem; font-size: 1.5rem;">🐛</span>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #991b1b;">Bug Count</h4>
+                                            <p style="color: #dc2626; font-size: 0.875rem;">Bugs encontrados em QA/Produção</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="padding: 1rem; background: #faf5ff; border-radius: 0.5rem; border: 1px solid #d8b4fe;">
+                                    <div class="flex items-center">
+                                        <span style="color: #a855f7; margin-right: 0.75rem; font-size: 1.5rem;">⚡</span>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #7c2d12;">Setup Time</h4>
+                                            <p style="color: #9333ea; font-size: 0.875rem;">Tempo para iniciar novos projetos</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <h3 style="font-size: 1.5rem; font-weight: 600; color: #374151; margin-bottom: 1rem;">Métricas Qualitativas</h3>
+                            <div class="space-y-4">
+                                <div style="padding: 1rem; background: #fffbeb; border-radius: 0.5rem; border: 1px solid #fde68a;">
+                                    <div class="flex items-center">
+                                        <span style="color: #d97706; margin-right: 0.75rem; font-size: 1.5rem;">✅</span>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #92400e;">Aderência Guidelines</h4>
+                                            <p style="color: #d97706; font-size: 0.875rem;">Consistência nos padrões</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="padding: 1rem; background: #eef2ff; border-radius: 0.5rem; border: 1px solid #c7d2fe;">
+                                    <div class="flex items-center">
+                                        <span style="color: #6366f1; margin-right: 0.75rem; font-size: 1.5rem;">👥</span>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #4338ca;">Satisfação da Equipe</h4>
+                                            <p style="color: #6366f1; font-size: 0.875rem;">Experiência com novo fluxo</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="padding: 1rem; background: #f0fdfa; border-radius: 0.5rem; border: 1px solid #99f6e4;">
+                                    <div class="flex items-center">
+                                        <span style="color: #0d9488; margin-right: 0.75rem; font-size: 1.5rem;">📊</span>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #0f766e;">Consistência Código</h4>
+                                            <p style="color: #0d9488; font-size: 0.875rem;">Uniformidade entre devs</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="padding: 1rem; background: #fff7ed; border-radius: 0.5rem; border: 1px solid #fed7aa;">
+                                    <div class="flex items-center">
+                                        <span style="color: #f97316; margin-right: 0.75rem; font-size: 1.5rem;">🎯</span>
+                                        <div>
+                                            <h4 style="font-weight: 600; color: #c2410c;">Framework Adoption</h4>
+                                            <p style="color: #f97316; font-size: 0.875rem;">Curva aprendizado hexagonal</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 7: Próximos Passos -->
+            <div class="slide-content" id="slide-6">
+                <div class="h-full">
+                    <h1 class="section-title">Próximos Passos</h1>
+                    <div class="flex justify-center">
+                        <div class="steps-container">
+                            <div class="step-card" style="border-left-color: #3b82f6;">
+                                <div class="step-number bg-blue">1</div>
+                                <div>
+                                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Aprovação do Piloto</h3>
+                                    <p style="color: #6b7280;">Definir formalmente os recursos e timeline</p>
+                                </div>
+                            </div>
+
+                            <div class="step-card" style="border-left-color: #22c55e;">
+                                <div class="step-number bg-green">2</div>
+                                <div>
+                                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Seleção da Equipe</h3>
+                                    <p style="color: #6b7280;">Escolher os 4 desenvolvedores seniors participantes</p>
+                                </div>
+                            </div>
+
+                            <div class="step-card" style="border-left-color: #a855f7;">
+                                <div class="step-number bg-purple">3</div>
+                                <div>
+                                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Setup e Treinamento</h3>
+                                    <p style="color: #6b7280;">Configurar ambiente e apresentar os agentes existentes</p>
+                                </div>
+                            </div>
+
+                            <div class="step-card" style="border-left-color: #f97316;">
+                                <div class="step-number bg-orange">4</div>
+                                <div>
+                                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Início do Piloto</h3>
+                                    <p style="color: #6b7280;">6 semanas de implementação com acompanhamento diário</p>
+                                </div>
+                            </div>
+
+                            <div class="step-card" style="border-left-color: #ef4444;">
+                                <div class="step-number bg-red">5</div>
+                                <div>
+                                    <h3 style="font-size: 1.25rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Avaliação e Escala</h3>
+                                    <p style="color: #6b7280;">Análise de resultados e plano de expansão para outros times</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Slide 8: Conclusão -->
+            <div class="slide-content" id="slide-7">
+                <div class="flex flex-col items-center justify-center h-full text-center">
+                    <div style="margin-bottom: 2rem;">
+                        <div style="display: inline-flex; align-items: center; justify-content: center; width: 5rem; height: 5rem; border-radius: 50%; background: linear-gradient(to right, #22c55e, #3b82f6); margin-bottom: 1.5rem;">
+                            <span style="color: white; font-size: 2.5rem;">⚡</span>
+                        </div>
+                    </div>
+                    <h1 style="font-size: 3rem; font-weight: bold; margin-bottom: 1.5rem; background: linear-gradient(to right, #22c55e, #3b82f6); background-clip: text; -webkit-background-clip: text; color: transparent;">
+                        Vamos Transformar
+                    </h1>
+                    <h2 style="font-size: 1.5rem; font-weight: 300; color: #374151; margin-bottom: 2rem;">
+                        nosso processo de desenvolvimento
+                    </h2>
+                    <div style="width: 6rem; height: 0.25rem; background: linear-gradient(to right, #22c55e, #3b82f6); margin: 0 auto 2rem;"></div>
+                    
+                    <div class="conclusion-stats">
+                        <div class="stats-grid">
+                            <div>
+                                <div class="stat-value text-blue">6</div>
+                                <div class="stat-label">Semanas</div>
+                            </div>
+                            <div>
+                                <div class="stat-value text-green">4</div>
+                                <div class="stat-label">Seniors</div>
+                            </div>
+                            <div>
+                                <div class="stat-value text-purple">∞</div>
+                                <div class="stat-label">Possibilidades</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 1.125rem; color: #6b7280; margin-top: 2rem; max-width: 32rem;">
+                        Um piloto estruturado para validar a próxima geração do desenvolvimento de software em nossa empresa
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <div class="navigation">
+            <div class="nav-controls">
+                <!-- Previous Button -->
+                <button class="nav-btn" id="prevBtn" onclick="previousSlide()">
+                    <span style="margin-right: 0.5rem;">←</span>
+                    Anterior
+                </button>
+
+                <!-- Slide Indicators -->
+                <div class="indicators" id="indicators">
+                    <!-- Indicators will be generated by JavaScript -->
+                </div>
+
+                <!-- Next Button -->
+                <button class="nav-btn" id="nextBtn" onclick="nextSlide()">
+                    Próximo
+                    <span style="margin-left: 0.5rem;">→</span>
+                </button>
+            </div>
+
+            <!-- Slide Counter -->
+            <div class="slide-counter" id="slideCounter">
+                1 de 8
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 8;
+
+        // Initialize indicators
+        function initializeIndicators() {
+            const indicatorsContainer = document.getElementById('indicators');
+            for (let i = 0; i < totalSlides; i++) {
+                const indicator = document.createElement('button');
+                indicator.className = 'indicator';
+                indicator.onclick = () => goToSlide(i);
+                indicatorsContainer.appendChild(indicator);
+            }
+            updateIndicators();
+        }
+
+        // Update slide display
+        function updateSlide() {
+            // Hide all slides
+            for (let i = 0; i < totalSlides; i++) {
+                document.getElementById(`slide-${i}`).classList.remove('active');
+            }
+            
+            // Show current slide
+            document.getElementById(`slide-${currentSlide}`).classList.add('active');
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+            
+            // Update counter
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} de ${totalSlides}`;
+            
+            // Update indicators
+            updateIndicators();
+        }
+
+        // Update indicators
+        function updateIndicators() {
+            const indicators = document.querySelectorAll('.indicator');
+            indicators.forEach((indicator, index) => {
+                if (index === currentSlide) {
+                    indicator.classList.add('active');
+                } else {
+                    indicator.classList.remove('active');
+                }
+            });
+        }
+
+        // Navigation functions
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlide();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'ArrowRight') nextSlide();
+            if (event.key === 'ArrowLeft') previousSlide();
+            if (event.key === 'Escape') {
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                }
+            }
+            if (event.key === 'F11' || (event.key === 'f' && event.ctrlKey)) {
+                event.preventDefault();
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                }
+            }
+        });
+
+        // Initialize presentation
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeIndicators();
+            updateSlide();
+        });
+
+        // Double-click for fullscreen
+        document.addEventListener('dblclick', function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else {
+                document.exitFullscreen();
+            }
+        });
+    </script>
+</body>
+</html>
